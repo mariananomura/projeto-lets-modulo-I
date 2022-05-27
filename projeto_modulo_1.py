@@ -5,6 +5,7 @@ from unicodedata import category
 
 
 def obter_dados():
+    '''Essa função carrega os dados dos produtos e retorna uma lista de dicionários, onde cada dicionário representa um produto.'''
     with open(os.path.join(sys.path[0], 'dados.json'), 'r') as arq:
         dados = json.loads(arq.read())
     return dados
@@ -14,6 +15,7 @@ dados = obter_dados()
 
 
 def listar_categorias(dados:list) -> list:
+    '''Retorna uma lista contendo todas as categorias dos diferentes produtos.'''
     lista_categorias = []
     for dicionario in dados:
         if dicionario['categoria'] not in lista_categorias:
@@ -22,6 +24,7 @@ def listar_categorias(dados:list) -> list:
 
 
 def listar_por_categoria(dados: list, categoria: str) -> list:
+    '''Retorna uma lista contendo todos os produtos pertencentes à categoria dada.'''
     itens_categoria = []
     for dicionario in dados:
         if dicionario['categoria'] == categoria:
@@ -30,6 +33,7 @@ def listar_por_categoria(dados: list, categoria: str) -> list:
 
 
 def produto_mais_caro(dados: list, categoria: str) -> dict:
+    '''Retorna um dicionário representando o produto mais caro da categoria dada.'''
     itens_categoria = listar_por_categoria(dados, categoria)
     item_mais_caro = itens_categoria[0]
     for item in itens_categoria:
@@ -39,6 +43,7 @@ def produto_mais_caro(dados: list, categoria: str) -> dict:
 
 
 def produto_mais_barato(dados: list, categoria: str) -> dict:
+    '''Retorna um dicionário representando o produto mais barato da categoria dada.'''
     itens_categoria = listar_por_categoria(dados, categoria)
     item_mais_barato = itens_categoria[0]
     for item_dicionario in itens_categoria:
@@ -48,25 +53,29 @@ def produto_mais_barato(dados: list, categoria: str) -> dict:
 
 
 def top_10_caros(dados: list) -> list:
+    '''Retorna uma lista de dicionários representando os 10 produtos mais caros.'''
     lista_10_mais_caros = sorted(
         dados, key=lambda valor: float(valor['preco']), reverse=True)
     return lista_10_mais_caros[:10]
 
 
 def top_10_baratos(dados: list):
+    '''Retorna uma lista de dicionários representando os 10 produtos mais baratos.'''
     lista_10_mais_baratos = sorted(
         dados, key=lambda valor: float(valor['preco']))
     return lista_10_mais_baratos[:10]
 
 
 def selecionar_categoria() -> str:
+    '''Recebe o input do usuário e converte para minúsculo para validação. Retorna a categoria. '''
     lista_categorias = listar_categorias(dados)
     categoria = input('Digite a categoria desejada: ').lower()
-    validando_categoria(categoria, lista_categorias)
+    validar_categoria(categoria, lista_categorias)
     return categoria
     
 
-def validando_categoria(categoria: str, lista: list):
+def validar_categoria(categoria: str, lista: list): 
+    '''Valida a categoria. Dá a opção de retornar ao menu principal no caso de categorias inválidas ou retorna a categoria validada.'''
     while categoria not in lista:
         print('\nCategoria inválida!')
         categoria = input('Digite a categoria desejada ou digite 0 para retornar ao menu: ').lower()
@@ -76,7 +85,8 @@ def validando_categoria(categoria: str, lista: list):
         return categoria
 
 
-def imprimir_lista(lista: list) -> str:   
+def imprimir_lista(lista: list) -> None: 
+    '''Formata a resposta para o usuário quando a resposta inclui mais de um item.'''  
     for item in lista:
         if type(item) == dict:
             print(f'ID:{item["id"]}\nPreço: {item["preco"]}\nCategoria: {item["categoria"]}\n')
@@ -84,11 +94,13 @@ def imprimir_lista(lista: list) -> str:
             print(f'-{item}')
 
 
-def imprimir_item_unico(item: dict) -> str:
+def imprimir_item_unico(item: dict) -> None:
+    '''Formata a resposta para o usuário quando a resposta inclui somente um item.'''
     print(f'ID: {item["id"]}\nPreço: {item["preco"]}\nCategoria: {item["categoria"]}\n')
 
 
-def menu(dados: list):
+def menu(dados: list) -> None:
+    '''Em loop, exibe um menu de opções para o usuário, lê o input do usuário e chama a função adequada para tratar o pedido do usuário.'''
     print('Seja bem-vindo(a) ao portal de produtos!\nEscolha uma das opções para continuar:')
 
     escolha_usuario = -1
